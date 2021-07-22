@@ -9,14 +9,21 @@ import { BehaviorSubject } from 'rxjs';
 export class HomePage {
   time: BehaviorSubject<string> = new BehaviorSubject('00:00');
   timer: number;
+  interval;
+  state: 'start' | 'stop' = 'stop';
   constructor(public navCtrl: NavController) {}
   startTimer(duration: number) {
+    clearInterval(this.interval);
     this.timer = duration * 60;
     setInterval(() => {
       this.updateTimeValue();
     }, 1000);
   }
-
+  stopTimer() {
+    clearInterval(this.interval);
+    this.time.next('00:00');
+    this.state = 'stop';
+  }
   updateTimeValue() {
     let minutes: any = this.timer / 60;
     let seconds: any = this.timer % 60;
@@ -26,6 +33,7 @@ export class HomePage {
     this.time.next(text);
     --this.timer;
     if (this.timer < 0) {
+      //alert('end time of count');
       this.startTimer(5);
     }
   }
